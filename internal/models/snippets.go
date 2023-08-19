@@ -42,42 +42,28 @@ func (m *SnippetModel) Insert(title string, content string, expires int) (int, e
 }
 
 // // This will return a specific snippet based on its id.
-// func (m *SnippetModel) Get(id int) (*Snippet, error) {
-// 	// Write the SQL statement we want to execute. Again, I've split it over two
-// 	// lines for readability.
-	
-// 	stmt := `SELECT id, title, content, created, expires FROM snippets
-// 	WHERE expires > UTC_TIMESTAMP() AND id = ?`
-
-// 	row := m.DB.QueryRow(stmt, id)
-// 	// Initialize a pointer to a new zeroed Snippet struct.
-// 	s := &Snippet{}
-	
-// 	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
-// 	if err != nil {
-// 		if errors.Is(err, sql.ErrNoRows) {
-// 			return nil, ErrNoRecord
-// 		} else {
-// 			return nil, err
-// 		}
-// 	}
-	
-// 	// If everything went OK then return the Snippet object.
-// 	return s, nil
-// }
-
 func (m *SnippetModel) Get(id int) (*Snippet, error) {
-	 s := &Snippet{}
+	// Write the SQL statement we want to execute. Again, I've split it over two
+	// lines for readability.
+	
+	stmt := `SELECT id, title, content, created, expires FROM snippets
+	WHERE expires > UTC_TIMESTAMP() AND id = ?`
 
-	 err := m.DB.QueryRow("SELECT ...", id).Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
-	 if err != nil {
-		 if errors.Is(err, sql.ErrNoRows) {
-		 	return nil, ErrNoRecord
-		 } else {
-		 	return nil, err
-		 }
-	 }
-	 return s, nil
+	row := m.DB.QueryRow(stmt, id)
+	// Initialize a pointer to a new zeroed Snippet struct.
+	s := &Snippet{}
+	
+	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
+	
+	// If everything went OK then return the Snippet object.
+	return s, nil
 }
 
 // This will return the 10 most recently created snippets.
